@@ -1,0 +1,2 @@
+#define PROJECT_VERSION "@parser-lab2-sample-programming-language_VERSION@"
+#define PROJECT_EXECUTABLE "@EXECUTABLE_NAME@"
