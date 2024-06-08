@@ -17,5 +17,7 @@ FLEX_TARGET(spl_lexer
 	${CMAKE_CURRENT_BINARY_DIR}/spl_lexer.cpp)
 ADD_FLEX_BISON_DEPENDENCY(spl_lexer spl_parser)
 
+add_library(tree OBJECT tree.cpp)
 add_executable(${EXECUTABLE_NAME} main.cpp)
+target_link_libraries(${EXECUTABLE_NAME} tree)
 target_include_directories(${EXECUTABLE_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})

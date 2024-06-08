@@ -1,7 +1,11 @@
 #include <cstring>
 #include <iostream>
+#include <memory>
+#include <ostream>
+#include <string>
 
 #include "config.hpp"
+#include "tree.hpp"
 
 char const* const HELP_SHORT_FLAG = "-h";
 char const* const HELP_LONG_FLAG = "--help";
@@ -22,8 +26,37 @@ void print_version() {
 
 int main(int argc, char const* argv[]) {
   if (1 == argc) {
-    print_help();
-    return EXIT_FAILURE;
+    std::cout << "Sample:\n";
+    using namespace nd::spl::tree;
+    std::shared_ptr<CompoundStatement> init =
+        std::make_shared<CompoundStatement>(
+            std::make_shared<AssignmentStatement>(
+                std::make_shared<Identifier>("q"),
+                std::make_shared<Constant>(0)),
+            std::make_shared<AssignmentStatement>(
+                std::make_shared<Identifier>("r"),
+                std::make_shared<Identifier>("m")));
+    std::shared_ptr<CompoundStatement> loop_body =
+        std::make_shared<CompoundStatement>(
+            std::make_shared<AssignmentStatement>(
+                std::make_shared<Identifier>("q"),
+                std::make_shared<CombinedOperands>(
+                    std::make_shared<Identifier>("q"),
+                    ArithmeticalOperator::PLUS, std::make_shared<Constant>(1))),
+            std::make_shared<AssignmentStatement>(
+                std::make_shared<Identifier>("r"),
+                std::make_shared<CombinedOperands>(
+                    std::make_shared<Identifier>("r"),
+                    ArithmeticalOperator::MINUS,
+                    std::make_shared<Identifier>("n"))));
+    std::shared_ptr<WhileStatement> loop = std::make_shared<WhileStatement>(
+        std::make_shared<BooleanExpression>(std::make_shared<Identifier>("r"),
+                                            RelationalOperator::GREATER_EQUAL,
+                                            std::make_shared<Identifier>("n")),
+        loop_body);
+    std::shared_ptr<Program> prog = std::make_shared<Program>(
+        std::make_shared<CompoundStatement>(init, loop));
+        std::cout << (*prog) << std::endl;
   } else {
     if (0 == std::strncmp(argv[1], HELP_SHORT_FLAG, strlen(HELP_SHORT_FLAG)) ||
         0 == std::strncmp(argv[1], HELP_LONG_FLAG, strlen(HELP_LONG_FLAG))) {
@@ -36,7 +69,8 @@ int main(int argc, char const* argv[]) {
       print_version();
       return EXIT_SUCCESS;
     } else {
-			return EXIT_FAILURE;
+      print_help();
+      return EXIT_FAILURE;
     }
   }
 }
