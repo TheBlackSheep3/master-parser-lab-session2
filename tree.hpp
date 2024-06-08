@@ -60,14 +60,18 @@ class WhileStatement : public Statement {
 class IfStatement : public Statement {
  public:
   IfStatement(std::shared_ptr<BooleanExpression> const& condition,
-              std::shared_ptr<Statement> const& body)
-      : m_condition{condition}, m_body{body} {}
+              std::shared_ptr<Statement> const& true_block,
+              std::shared_ptr<Statement> const& false_block)
+      : m_condition{condition} {
+    m_blocks[0] = std::shared_ptr(true_block);
+    m_blocks[1] = std::shared_ptr(false_block);
+  }
   virtual ~IfStatement() = default;
   std::string get_str() const override;
 
  private:
   std::shared_ptr<BooleanExpression> m_condition;
-  std::shared_ptr<Statement> m_body;
+  std::shared_ptr<Statement> m_blocks[2];
 };
 
 class Identifier;

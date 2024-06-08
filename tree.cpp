@@ -24,7 +24,8 @@ std::string nd::spl::tree::WhileStatement::get_str() const {
 
 std::string nd::spl::tree::IfStatement::get_str() const {
   return std::string("IF_STMT(" + m_condition->get_str() + "," +
-                     m_body->get_str() + ")");
+                     m_blocks[0]->get_str() + "," + m_blocks[1]->get_str() +
+                     ")");
 }
 
 std::string nd::spl::tree::AssignmentStatement::get_str() const {
