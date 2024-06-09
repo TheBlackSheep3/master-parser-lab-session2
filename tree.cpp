@@ -1,5 +1,6 @@
 #include <ostream>
 #include <string>
+#include <stdexcept>
 
 #include "tree.hpp"
 
@@ -55,6 +56,9 @@ std::string nd::spl::tree::BooleanExpression::get_str() const {
     case nd::spl::tree::RelationalOperator::GREATER_THAN:
       op = std::string(">");
       break;
+    case nd::spl::tree::RelationalOperator::NOT_EQUAL:
+      op = std::string("!=");
+      break;
   }
   return std::string("B_EXPR(" + m_arithmethicExpressions[0]->get_str() + "," +
                      op + "," + m_arithmethicExpressions[1]->get_str() + ")");
@@ -63,12 +67,14 @@ std::string nd::spl::tree::BooleanExpression::get_str() const {
 std::string nd::spl::tree::SignedOperand::get_str() const {
   std::string sign;
   switch (m_sign) {
-    case nd::spl::tree::Sign::PLUS:
+    case nd::spl::tree::ArithmeticalOperator::PLUS:
       sign = std::string("+");
       break;
-    case nd::spl::tree::Sign::MINUS:
+    case nd::spl::tree::ArithmeticalOperator::MINUS:
       sign = std::string("-");
       break;
+    default:
+      throw std::invalid_argument("m_sign");
   }
   return std::string("SIGN_OP(" + sign + "," + m_operand->get_str() + ")");
 }

@@ -54,9 +54,6 @@ int main(int argc, char const* argv[]) {
                                             RelationalOperator::GREATER_EQUAL,
                                             std::make_shared<Identifier>("n")),
         loop_body);
-    std::shared_ptr<Program> prog = std::make_shared<Program>(
-        std::make_shared<CompoundStatement>(init, loop));
-        std::cout << (*prog) << std::endl;
   } else {
     if (0 == std::strncmp(argv[1], HELP_SHORT_FLAG, strlen(HELP_SHORT_FLAG)) ||
         0 == std::strncmp(argv[1], HELP_LONG_FLAG, strlen(HELP_LONG_FLAG))) {

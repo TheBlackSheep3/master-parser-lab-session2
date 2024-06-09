@@ -104,7 +104,8 @@ enum class RelationalOperator {
   LESS_EQUAL,
   EQUAL,
   GREATER_EQUAL,
-  GREATER_THAN
+  GREATER_THAN,
+  NOT_EQUAL
 };
 
 class BooleanExpression : public INode {
@@ -129,23 +130,30 @@ class ArithmeticExpression : public INode {
   virtual ~ArithmeticExpression() = default;
 };
 
-enum class Sign { PLUS, MINUS };
-
 class Operand;
+
+enum class ArithmeticalOperator { PLUS, MINUS, TIMES };
 
 class SignedOperand : public ArithmeticExpression {
  public:
-  SignedOperand(Sign sign, std::shared_ptr<Operand> const& operand)
-      : m_sign{sign}, m_operand{operand} {}
+  SignedOperand(ArithmeticalOperator sign,
+                std::shared_ptr<Operand> const& operand)
+      : m_sign{sign}, m_operand{operand} {
+    switch (sign) {
+      case nd::spl::tree::ArithmeticalOperator::PLUS:
+      case nd::spl::tree::ArithmeticalOperator::MINUS:
+        break;
+      default:
+        throw std::invalid_argument("m_sign");
+    }
+  }
   virtual ~SignedOperand() = default;
   std::string get_str() const override;
 
  private:
-  Sign m_sign;
+  ArithmeticalOperator m_sign;
   std::shared_ptr<Operand> m_operand;
 };
-
-enum class ArithmeticalOperator { PLUS, MINUS, TIMES };
 
 class CombinedOperands : public ArithmeticExpression {
  public:

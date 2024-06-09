@@ -11,13 +11,20 @@ find_package(BISON REQUIRED)
 
 BISON_TARGET(spl_parser
 	spl_parser.y
-	${CMAKE_CURRENT_BINARY_DIR}/spl_parser.cpp)
+	${CMAKE_CURRENT_BINARY_DIR}/spl_parser.cpp
+	)
 FLEX_TARGET(spl_lexer
 	spl_lexer.l
 	${CMAKE_CURRENT_BINARY_DIR}/spl_lexer.cpp)
 ADD_FLEX_BISON_DEPENDENCY(spl_lexer spl_parser)
 
 add_library(tree OBJECT tree.cpp)
+add_library(parser_lexer OBJECT ${BISON_spl_parser_OUTPUTS} ${FLEX_spl_lexer_OUTPUTS})
 add_executable(${EXECUTABLE_NAME} main.cpp)
-target_link_libraries(${EXECUTABLE_NAME} tree)
-target_include_directories(${EXECUTABLE_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_link_libraries(${EXECUTABLE_NAME} tree parser_lexer)
+target_include_directories(${EXECUTABLE_NAME}
+	PRIVATE
+		${CMAKE_CURRENT_BINARY_DIR}
+		${CMAKE_CURRENT_SOURCE_DIR}
+	)
+target_include_directories(parser_lexer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
