@@ -1,3 +1,5 @@
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <memory>
@@ -5,12 +7,15 @@
 #include <string>
 
 #include "config.hpp"
+#include "spl_parser.hpp"
 #include "tree.hpp"
 
 char const* const HELP_SHORT_FLAG = "-h";
 char const* const HELP_LONG_FLAG = "--help";
 char const* const VERSION_SHORT_FLAG = "-V";
 char const* const VERSION_LONG_FLAG = "--version";
+
+extern std::FILE* yyin;
 
 void print_help() {
   std::cout << "Usage: " << PROJECT_EXECUTABLE << " [options] INPUT_FILE\n";
@@ -66,8 +71,20 @@ int main(int argc, char const* argv[]) {
       print_version();
       return EXIT_SUCCESS;
     } else {
-      print_help();
-      return EXIT_FAILURE;
+      std::FILE* fp = std::fopen(argv[1], "r");
+      if (!fp) {
+        return EXIT_FAILURE;
+      } else {
+        std::shared_ptr<nd::spl::tree::Program> prg_ptr;
+        nd::spl::Parser p{prg_ptr};
+        yyin = fp;
+        if (p.parse() == 0 && prg_ptr != nullptr) {
+          std::cout << *prg_ptr << '\n';
+          return EXIT_SUCCESS;
+        } else {
+          return EXIT_FAILURE;
+        }
+      }
     }
   }
 }

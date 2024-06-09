@@ -45,9 +45,11 @@ YY_DECL;
 %nterm <std::shared_ptr<nd::spl::tree::BooleanExpression>> boolean_expression
 %nterm <std::shared_ptr<nd::spl::tree::ArithmeticExpression>> arithmetic_expression
 %nterm <std::shared_ptr<nd::spl::tree::Operand>> operand
+
+%parse-param {std::shared_ptr<nd::spl::tree::Program>& result_ptr}
 // rules
 %%
-program: statement { $program = std::make_shared<nd::spl::tree::Program>($statement); };
+program: statement { $program = std::make_shared<nd::spl::tree::Program>($statement); result_ptr = $program;};
 statement: compound_statement { $statement = $compound_statement; }
 | while_statement { $statement = $while_statement; }
 | if_statement { $statement = $if_statement; }
