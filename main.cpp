@@ -16,6 +16,7 @@ char const* const VERSION_SHORT_FLAG = "-V";
 char const* const VERSION_LONG_FLAG = "--version";
 
 extern std::FILE* yyin;
+extern int yylex_destroy();
 
 void print_help() {
   std::cout << "Usage: " << PROJECT_EXECUTABLE << " [options] INPUT_FILE\n";
@@ -72,19 +73,23 @@ int main(int argc, char const* argv[]) {
       return EXIT_SUCCESS;
     } else {
       std::FILE* fp = std::fopen(argv[1], "r");
+      int exit_code;
       if (!fp) {
-        return EXIT_FAILURE;
+        exit_code = EXIT_FAILURE;
       } else {
         std::shared_ptr<nd::spl::tree::Program> prg_ptr;
         nd::spl::Parser p{prg_ptr};
         yyin = fp;
         if (p.parse() == 0 && prg_ptr != nullptr) {
-          std::cout << *prg_ptr << '\n';
-          return EXIT_SUCCESS;
+          std::cout << *prg_ptr << std::endl;
+          exit_code = EXIT_SUCCESS;
         } else {
-          return EXIT_FAILURE;
+          exit_code = EXIT_FAILURE;
         }
       }
+      yylex_destroy();
+      std::fclose(fp);
+      return exit_code;
     }
   }
 }

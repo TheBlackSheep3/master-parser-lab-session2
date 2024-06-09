@@ -31,7 +31,7 @@
 ">"										{return nd::spl::Parser::make_RELATIONAL_OPERATOR(nd::spl::tree::RelationalOperator::GREATER_THAN);}
 "!="									{return nd::spl::Parser::make_RELATIONAL_OPERATOR(nd::spl::tree::RelationalOperator::NOT_EQUAL);}
 "="										{return nd::spl::Parser::make_RELATIONAL_OPERATOR(nd::spl::tree::RelationalOperator::EQUAL);}
-[+-]									{if (0 == std::strncmp(yytext, "+", 1)){return nd::spl::Parser::make_ADDITIVE_OPERATOR(nd::spl::tree::ArithmeticalOperator::PLUS);}else{return nd::spl::Parser::make_ADDITIVE_OPERATOR(nd::spl::tree::ArithmeticalOperator::MINUS);}}
+[+-]									{using namespace std;if (0 == strncmp(yytext, "+", 1)){return nd::spl::Parser::make_ADDITIVE_OPERATOR(nd::spl::tree::ArithmeticalOperator::PLUS);}else{return nd::spl::Parser::make_ADDITIVE_OPERATOR(nd::spl::tree::ArithmeticalOperator::MINUS);}}
 [*]										{return nd::spl::Parser::make_MULTIPLICATIVE_OPERATOR(nd::spl::tree::ArithmeticalOperator::TIMES);}
 [a-zA-Z][a-zA-Z0-9_]*	{return nd::spl::Parser::make_IDENTIFIER(std::make_shared<nd::spl::tree::Identifier>(yytext));}
 -?[1-9][0-9]*|0				{return nd::spl::Parser::make_INTEGER(std::make_shared<nd::spl::tree::Constant>(atoll(yytext)));}
