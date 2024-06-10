@@ -4,6 +4,9 @@ begin
 		/* quotient */  q:=0;
 		/* remainder */ r:=m
 	end;
+	/*
+	testing multiline comments
+	*/
 	while r >= n
 	do 
 		begin
