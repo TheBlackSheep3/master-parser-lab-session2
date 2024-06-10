@@ -2,6 +2,10 @@
 #include <cstdlib>
 #include <memory>
 
+#ifdef WIN_IO_H
+#include "isatty.hpp"
+#endif
+
 #include "spl_parser.hpp"
 #include "tree.hpp"
 %}

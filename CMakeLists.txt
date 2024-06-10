@@ -9,13 +9,22 @@ configure_file(config.hpp.in config.hpp)
 find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)
 
+# determine flex flags for windows and unix
+if (WIN32)
+	set(FLEX_FLAGS "-DYY_NO_UNISTD_H -DWIN_IO_H")
+else()
+	set(FLEX_FLAGS "")
+endif()
+
 BISON_TARGET(spl_parser
 	spl_parser.y
 	${CMAKE_CURRENT_BINARY_DIR}/spl_parser.cpp
 	)
 FLEX_TARGET(spl_lexer
 	spl_lexer.l
-	${CMAKE_CURRENT_BINARY_DIR}/spl_lexer.cpp)
+	${CMAKE_CURRENT_BINARY_DIR}/spl_lexer.cpp
+	COMPILE_FLAGS ${FLEX_FLAGS}
+)
 ADD_FLEX_BISON_DEPENDENCY(spl_lexer spl_parser)
 
 add_library(tree OBJECT tree.cpp)
