@@ -1,0 +1,14 @@
+begin
+	begin
+		// initialization
+		/* quotient */  q:=0;
+		/* remainder */ r:=m
+	end;
+	while r >= n
+	do 
+		begin
+			q:=q+1;
+			r:=r-n
+		end
+	od
+end

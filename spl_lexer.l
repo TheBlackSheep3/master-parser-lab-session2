@@ -9,7 +9,9 @@
 %option noyywrap
 
 %%
-[ \t\r];
+[ \t\r\n]							{}
+[/]{2}.*\n						{}
+[/][*].*[*][/]				{}
 
 "begin"								{return nd::spl::Parser::make__BEGIN();}
 ";"										{return nd::spl::Parser::make_SEMICOLON();}
