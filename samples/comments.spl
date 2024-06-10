@@ -11,6 +11,9 @@ begin
 	do 
 		begin
 			q:=q+1;
+			/*************************
+			 * another block comment *
+			 *************************/
 			r:=r-n
 		end
 	od

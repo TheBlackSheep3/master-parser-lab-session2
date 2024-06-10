@@ -11,11 +11,20 @@
 %}
 
 %option noyywrap
+%s IN_COMMENT
 
 %%
+<INITIAL>{
+"/*"              BEGIN(IN_COMMENT);
+}
+<IN_COMMENT>{
+"*/"      BEGIN(INITIAL);
+[^*\n]+   // eat comment in chunks
+"*"       // eat the lone star
+\n        yylineno++;
+}
+"//".*\n						{}
 [ \t\r\n]							{}
-[/]{2}.*\n						{}
-[/][*].*[*][/]				{}
 
 "begin"								{return nd::spl::Parser::make__BEGIN();}
 ";"										{return nd::spl::Parser::make_SEMICOLON();}
