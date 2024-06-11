@@ -19,12 +19,18 @@ To build the project run
 cmake -B bld
 cmake --build bld
 ```
+To run the test invoke the following command after building the project
+```shell
+ctest --test-dir
+```
 
 ## Usage
 After compilation the binary is located in the `bld` directory. It only supports single file programs. Sample programs can be found in the subdirectory `samples`. The code file is passed as an argument to the binary and the parse tree gets printed to the next line and the program terminates.
 ```shell
 ./bld/spl_parser samples/division.spl
-PROGRAM(COMP_STMT(COMP_STMT(ASSING_STMT(ID(q),CONST(0)),ASSING_STMT(ID(r),ID(m))),WHILE_STMT(B_EXPR(ID(r),>=,ID(n)),COMP_STMT(ASSING_STMT(ID(q),AR_EXPR(ID(q),+,CONST(1))),ASSING_STMT(ID(r),AR_EXPR(ID(r),-,ID(n)))))))
+PROGRAM(COMP_STMT(COMP_STMT(ASSING_STMT(ID(q),CONST(0)),ASSING_STMT(ID(r),ID(m))),
+WHILE_STMT(B_EXPR(ID(r),>=,ID(n)),COMP_STMT(ASSING_STMT(ID(q),AR_EXPR(ID(q),+,CONST(1))),
+ASSING_STMT(ID(r),AR_EXPR(ID(r),-,ID(n)))))))
 ```
 
 ## Accepted programs
@@ -45,7 +51,10 @@ The progam accepts source code written in the sample programming langauage as de
 <opd> ::= <id> | <const> | "(" <arexpr> ")"
 <id> ::= <letter> | <id> <char>
 <char> ::= <letter> | <digit> | "_"
-<letter> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
+<letter> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m"
+           | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+           | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M"
+           | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
 <const> ::= <digit> | <non zero digit> <const>
 <digit> ::= "0" | <non zero digit>
 <non zero digit> ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
