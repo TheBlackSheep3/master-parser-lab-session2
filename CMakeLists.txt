@@ -37,3 +37,42 @@ target_include_directories(${EXECUTABLE_NAME}
 		${CMAKE_CURRENT_SOURCE_DIR}
 	)
 target_include_directories(parser_lexer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+
+enable_testing()
+
+add_test(NAME Usage COMMAND ${EXECUTABLE_NAME} -h)
+set_tests_properties(Usage
+	PROPERTIES PASS_REGULAR_EXPRESSION "Usage:.*spl_parser.*\[options\].*INPUT_FILE"
+)
+
+add_test(NAME Division COMMAND ${EXECUTABLE_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/samples/division.spl)
+set_tests_properties(
+	Division
+	PROPERTIES
+	PASS_REGULAR_EXPRESSION "PROGRAM[(]COMP_STMT[(]COMP_STMT[(]ASSING_STMT[(]ID[(]q[)],CONST[(]0[)][)],ASSING_STMT[(]ID[(]r[)],ID[(]m[)][)][)],WHILE_STMT[(]B_EXPR[(]ID[(]r[)],>=,ID[(]n[)][)],COMP_STMT[(]ASSING_STMT[(]ID[(]q[)],AR_EXPR[(]ID[(]q[)],[+],CONST[(]1[)][)][)],ASSING_STMT[(]ID[(]r[)],AR_EXPR[(]ID[(]r[)],-,ID[(]n[)][)][)][)][)][)][)]"
+	FAIL_REGULAR_EXPRESSION "syntax error"
+)
+
+add_test(NAME Comments COMMAND ${EXECUTABLE_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/samples/comments.spl)
+set_tests_properties(
+	Comments
+	PROPERTIES
+	PASS_REGULAR_EXPRESSION "PROGRAM[(]COMP_STMT[(]COMP_STMT[(]ASSING_STMT[(]ID[(]q[)],CONST[(]0[)][)],ASSING_STMT[(]ID[(]r[)],ID[(]m[)][)][)],WHILE_STMT[(]B_EXPR[(]ID[(]r[)],>=,ID[(]n[)][)],COMP_STMT[(]ASSING_STMT[(]ID[(]q[)],AR_EXPR[(]ID[(]q[)],[+],CONST[(]1[)][)][)],ASSING_STMT[(]ID[(]r[)],AR_EXPR[(]ID[(]r[)],-,ID[(]n[)][)][)][)][)][)][)]"
+	FAIL_REGULAR_EXPRESSION "syntax error"
+)
+
+add_test(NAME Wrong_Assigment COMMAND ${EXECUTABLE_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/samples/wrong_assign.spl)
+set_tests_properties(
+	Wrong_Assigment
+	PROPERTIES
+	PASS_REGULAR_EXPRESSION "syntax error"
+	FAIL_REGULAR_EXPRESSION "PROGRAM"
+)
+
+add_test(NAME Invalid_Input COMMAND ${EXECUTABLE_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/samples/faulty.spl)
+set_tests_properties(
+	Invalid_Input
+	PROPERTIES
+	PASS_REGULAR_EXPRESSION "syntax error"
+	FAIL_REGULAR_EXPRESSION "PROGRAM"
+)
