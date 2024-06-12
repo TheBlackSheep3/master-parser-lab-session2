@@ -21,7 +21,7 @@ cmake --build bld
 ```
 To run the test invoke the following command after building the project
 ```shell
-ctest --test-dir
+ctest --test-dir bld
 ```
 
 ## Usage
