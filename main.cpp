@@ -13,9 +13,6 @@ char const* const HELP_LONG_FLAG = "--help";
 char const* const VERSION_SHORT_FLAG = "-V";
 char const* const VERSION_LONG_FLAG = "--version";
 
-extern std::FILE* yyin;
-extern int yylex_destroy();
-
 void print_help() {
   std::cout << "Usage: " << PROJECT_EXECUTABLE << " [options] INPUT_FILE\n";
   std::cout << "  -h, --help    Print this help message and exit.\n";
