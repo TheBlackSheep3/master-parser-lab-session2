@@ -2,12 +2,9 @@
 %code requires {
 #include <memory>
 #include "tree.hpp"
+namespace nd::spl {
+class Lexer;
 }
-%code provides {
-// Give Flex the prototype of yylex we want ...
-# define YY_DECL nd::spl::Parser::symbol_type yylex ()
-// ... and declare it for the parser's sake.
-YY_DECL;
 }
 %require "3.2"
 %language "c++"
@@ -46,7 +43,15 @@ YY_DECL;
 %nterm <std::shared_ptr<nd::spl::tree::ArithmeticExpression>> arithmetic_expression
 %nterm <std::shared_ptr<nd::spl::tree::Operand>> operand
 
+%parse-param {Lexer& lexer}
 %parse-param {std::shared_ptr<nd::spl::tree::Program>& result_ptr}
+
+%code{
+#include "spl_lexer.hpp"
+
+#undef yylex
+#define yylex lexer.symbol_yylex
+}
 // rules
 %%
 program: statement { $program = std::make_shared<nd::spl::tree::Program>($statement); result_ptr = $program;};

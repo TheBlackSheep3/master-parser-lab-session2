@@ -36,7 +36,7 @@ target_include_directories(${EXECUTABLE_NAME}
 		${CMAKE_CURRENT_BINARY_DIR}
 		${CMAKE_CURRENT_SOURCE_DIR}
 	)
-target_include_directories(parser_lexer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(parser_lexer PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 enable_testing()
 

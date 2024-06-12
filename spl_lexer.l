@@ -2,15 +2,17 @@
 #include <cstdlib>
 #include <memory>
 
-#ifdef WIN_IO_H
-#include "isatty.hpp"
-#endif
+#include "spl_lexer.hpp"
 
-#include "spl_parser.hpp"
-#include "tree.hpp"
+// Give Flex the prototype of yylex we want ...
+#undef  YY_DECL
+#define YY_DECL nd::spl::Parser::symbol_type nd::spl::Lexer::symbol_yylex()
+// ... and declare it for the parser's sake.
 %}
 
 %option noyywrap
+%option yyclass="nd::spl::Lexer"
+%option c++
 %s IN_COMMENT
 
 %%

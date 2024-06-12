@@ -1,12 +1,9 @@
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include <fstream>
 #include <iostream>
 #include <memory>
-#include <ostream>
-#include <string>
 
 #include "config.hpp"
+#include "spl_lexer.hpp"
 #include "spl_parser.hpp"
 #include "tree.hpp"
 
@@ -72,14 +69,16 @@ int main(int argc, char const* argv[]) {
       print_version();
       return EXIT_SUCCESS;
     } else {
-      std::FILE* fp = std::fopen(argv[1], "r");
+      std::ifstream input_file{argv[1]};
       int exit_code;
-      if (!fp) {
+      if (!input_file.good()) {
         exit_code = EXIT_FAILURE;
+      } else if (input_file.eof()) {
+        return EXIT_SUCCESS;
       } else {
         std::shared_ptr<nd::spl::tree::Program> prg_ptr;
-        nd::spl::Parser p{prg_ptr};
-        yyin = fp;
+        nd::spl::Lexer lexer{&input_file};
+        nd::spl::Parser p{lexer, prg_ptr};
         if (p.parse() == 0 && prg_ptr != nullptr) {
           std::cout << *prg_ptr << std::endl;
           exit_code = EXIT_SUCCESS;
@@ -87,8 +86,6 @@ int main(int argc, char const* argv[]) {
           exit_code = EXIT_FAILURE;
         }
       }
-      yylex_destroy();
-      std::fclose(fp);
       return exit_code;
     }
   }
