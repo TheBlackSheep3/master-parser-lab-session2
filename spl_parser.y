@@ -6,7 +6,7 @@ namespace nd::spl {
 class Lexer;
 }
 }
-%require "3.2"
+%require "3.6"
 %language "c++"
 %define api.namespace {nd::spl}
 %define api.parser.class {Parser}

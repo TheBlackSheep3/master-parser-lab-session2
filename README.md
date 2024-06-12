@@ -9,7 +9,7 @@ Build LR or LALR parser for (reasonable subset of) some programming language
 ## Prerequisites
 The tool used for generating the lexer is [Flex](https://github.com/westes/flex) and for the parser [GNU Bison](https://www.gnu.org/software/bison/) was used. To compile and run the software the following tools are needed
 - Flex 2.6.4
-- GNU Bison (at least version 3.2)
+- GNU Bison (at least version 3.6)
 - [CMake](https://cmake.org/download/) (at least version 3.7)
 - C++ compiler supporting C++17 (e.g. Apple Clang [used to develop this program], Clang, g++, MSVC)
 
