@@ -65,3 +65,13 @@ Additionally line comments starting with `//` and block comments in the form of 
 The lexer is generated using Flex, used in version 2.6.4 during development. The parser is generated using GNU Bison, used in version 3.8.2 during development. The build system used for the project is CMake, during development used in version 3.29.5. the C++ compiler which was used for development and testing is AppleClang version 15.0.0.15000309.
 
 ## Statements about final CFG
+The grammar of the sample programming language is a SLR(1) grammar as determined by the [context free grammar tool](https://smlweb.cpsc.ucalgary.ca/lr0.php?grammar=PROG+-%3E+STMT.%0ASTMT+-%3E+COM_STMT+%0A++%7C+WHILE_STMT%0A++%7C+IF_STMT%0A++%7C+ASSIGN_STMT%0A++%7C+NULL_STMT.%0ACOM_STMT+-%3E+begin+STMT+%3B+STMT+end.%0AWHILE_STMT+-%3E+while+BEXPR+do+STMT+od.%0AIF_STMT+-%3E+if+BEXPR+then+STMT+else+STMT+fi.%0AASSIGN_STMT+-%3E+id+%3A%23+AREXPR.%0ANULL_STMT+-%3E+skip.%0ABEXPR+-%3E+AREXPR+l+AREXPR%0A++%7C+AREXPR+l%23+AREXPR%0A++%7C+AREXPR+%23+AREXPR%0A++%7C+AREXPR+%21%23+AREXPR%0A++%7C+AREXPR+g%23+AREXPR%0A++%7C+AREXPR+g%23+AREXPR.%0AAREXPR+-%3E+OP%0A++%7C+%2B+OP%0A++%7C+%7E+OP%0A++%7C+OP+%2B+OP%0A++%7C+OP+%7E+OP%0A++%7C+OP+%2A+OP.%0AOP+-%3E+id%0A++%7C+const%0A++%7C+%28+AREXPR+%29.&substs=) provided by the university of Calgary. This tool defines some characters as reserved which are used in the spl grammar. To cirumvent this limitation these characters have been mapped unambiguously to alternative characters as displayed int he table below.
+
+|original character|remapped characters|
+|:----------------:|:-----------------:|
+|       `=`        |        `#`        |
+|       `<`        |        `l`        |
+|       `>`        |        `g`        |
+|       `-`        |        `~`        |
+
+The actual parser built is a LALR(1) parser. As described in the [GNU Bison Documentation](https://www.gnu.org/software/bison/manual/html_node/LR-Table-Construction.html), by default Bison generates an LALR(1) parser.
