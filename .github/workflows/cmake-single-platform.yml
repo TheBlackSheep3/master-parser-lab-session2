@@ -22,10 +22,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Pull Flex source as tarball
+      working-directory: ${{github.workspace}}
+      run: wget -q "https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz"
+
+    - name: unpack Flex source code
+      working-directory: ${{github.workspace}}
+      run: tar xzf flex-2.6.4.tar.gz
+
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DFLEX_INCLUDE_DIR=/usr/local/include
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DFLEX_INCLUDE_DIR=${{github.workspace}}/flex-2.6.4/src
 
     - name: Build
       # Build your program with the given configuration
