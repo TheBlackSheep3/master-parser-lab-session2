@@ -1,23 +1,22 @@
-#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <utility>
 
 #include "config.hpp"
 #include "spl_lexer.hpp"
 #include "spl_parser.hpp"
+#include "parameters.hpp"
 #include "tree.hpp"
 
-char const* const HELP_SHORT_FLAG = "-h";
-char const* const HELP_LONG_FLAG = "--help";
-char const* const VERSION_SHORT_FLAG = "-V";
-char const* const VERSION_LONG_FLAG = "--version";
-
 void print_help() {
-  std::cout << "Usage: " << PROJECT_EXECUTABLE << " [options] INPUT_FILE\n";
-  std::cout << "  -h, --help    Print this help message and exit.\n";
-  std::cout << "  -V, --version Print the version of " << PROJECT_EXECUTABLE
-            << " and exit." << std::endl;
+  std::cout << "Usage: " << PROJECT_EXECUTABLE << " [options] [INPUT_FILE]\n";
+  std::cout << "  -o, --output OUTPUT_FILE   Write output to OUTPUT_FILE.\n";
+  std::cout
+      << "  -h, --help                 Print this help message and exit.\n";
+  std::cout << "  -V, --version              Print the version of "
+            << PROJECT_EXECUTABLE << " and exit.\n\n";
+  std::cout << "If no INPUT_FILE is provided, input is read from stdin.\n";
 }
 
 void print_version() {
@@ -25,66 +24,54 @@ void print_version() {
             << std::endl;
 }
 
-int main(int argc, char const* argv[]) {
-  if (1 == argc) {
-    std::cout << "Sample:\n";
-    using namespace nd::spl::tree;
-    std::shared_ptr<CompoundStatement> init =
-        std::make_shared<CompoundStatement>(
-            std::make_shared<AssignmentStatement>(
-                std::make_shared<Identifier>("q"),
-                std::make_shared<Constant>(0)),
-            std::make_shared<AssignmentStatement>(
-                std::make_shared<Identifier>("r"),
-                std::make_shared<Identifier>("m")));
-    std::shared_ptr<CompoundStatement> loop_body =
-        std::make_shared<CompoundStatement>(
-            std::make_shared<AssignmentStatement>(
-                std::make_shared<Identifier>("q"),
-                std::make_shared<CombinedOperands>(
-                    std::make_shared<Identifier>("q"),
-                    ArithmeticalOperator::PLUS, std::make_shared<Constant>(1))),
-            std::make_shared<AssignmentStatement>(
-                std::make_shared<Identifier>("r"),
-                std::make_shared<CombinedOperands>(
-                    std::make_shared<Identifier>("r"),
-                    ArithmeticalOperator::MINUS,
-                    std::make_shared<Identifier>("n"))));
-    std::shared_ptr<WhileStatement> loop = std::make_shared<WhileStatement>(
-        std::make_shared<BooleanExpression>(std::make_shared<Identifier>("r"),
-                                            RelationalOperator::GREATER_EQUAL,
-                                            std::make_shared<Identifier>("n")),
-        loop_body);
+int parse(std::istream& input, std::ostream& output) {
+  if (!input.good()) {
+    return EXIT_FAILURE;
+  } else if (input.eof()) {
+    return EXIT_SUCCESS;
   } else {
-    if (0 == std::strncmp(argv[1], HELP_SHORT_FLAG, strlen(HELP_SHORT_FLAG)) ||
-        0 == std::strncmp(argv[1], HELP_LONG_FLAG, strlen(HELP_LONG_FLAG))) {
-      print_help();
-      return EXIT_SUCCESS;
-    } else if (0 == std::strncmp(argv[1], VERSION_SHORT_FLAG,
-                                 strlen(VERSION_SHORT_FLAG)) ||
-               0 == std::strncmp(argv[1], VERSION_LONG_FLAG,
-                                 strlen(VERSION_LONG_FLAG))) {
-      print_version();
+    std::shared_ptr<nd::spl::tree::Program> prg_ptr;
+    nd::spl::Lexer lexer{&input};
+    nd::spl::Parser p{lexer, prg_ptr};
+    if (p.parse() == 0 && prg_ptr != nullptr) {
+      output << *prg_ptr << std::endl;
       return EXIT_SUCCESS;
     } else {
-      std::ifstream input_file{argv[1]};
-      int exit_code;
-      if (!input_file.good()) {
-        exit_code = EXIT_FAILURE;
-      } else if (input_file.eof()) {
-        return EXIT_SUCCESS;
-      } else {
-        std::shared_ptr<nd::spl::tree::Program> prg_ptr;
-        nd::spl::Lexer lexer{&input_file};
-        nd::spl::Parser p{lexer, prg_ptr};
-        if (p.parse() == 0 && prg_ptr != nullptr) {
-          std::cout << *prg_ptr << std::endl;
-          exit_code = EXIT_SUCCESS;
-        } else {
-          exit_code = EXIT_FAILURE;
-        }
-      }
-      return exit_code;
+      return EXIT_FAILURE;
     }
+  }
+}
+
+int main(int argc, char const* argv[]) {
+  Parameters params{/* ignore binary name */ argv + 1, argv + argc};
+  if (params.help_requested()) {
+    print_help();
+    return EXIT_SUCCESS;
+  } else if (params.version_requested()) {
+    print_version();
+    return EXIT_SUCCESS;
+  } else {
+    Container<std::istream> input_ptr;
+    Container<std::ostream> output_ptr;
+    if (params.input_file().empty()) {
+      input_ptr = std::move(Container<std::istream>(&std::cin, false));
+    } else {
+      input_ptr = std::move(Container<std::istream>(
+          new std::ifstream{params.input_file()}, false));
+    }
+    if (!params.output_requested()) {
+      output_ptr = std::move(Container<std::ostream>(&std::cout, false));
+    } else {
+      if (!params.output_file().empty()) {
+        output_ptr = std::move(Container<std::ostream>(
+            new std::ofstream{params.output_file()}, false));
+      } else {
+        std::cerr << "missing parameter OUTPUT_FILE\n\nRun '"
+                  << PROJECT_EXECUTABLE << " " << HELP_LONG_FLAG
+                  << "' for more information.\n";
+        return EXIT_FAILURE;
+      }
+    }
+    return parse(*input_ptr, *output_ptr);
   }
 }

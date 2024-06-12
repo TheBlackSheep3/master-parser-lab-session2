@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.7 FATAL_ERROR)
 
-project("parser-lab2-sample-programming-language" VERSION 1.0)
+project("parser-lab2-sample-programming-language" VERSION 1.1)
 
 set(CMAKE_CXX_STANDARD 17)
 set(EXECUTABLE_NAME spl_parser)
