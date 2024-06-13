@@ -57,14 +57,14 @@ int main(int argc, char const* argv[]) {
       input_ptr = std::move(Container<std::istream>(&std::cin, false));
     } else {
       input_ptr = std::move(Container<std::istream>(
-          new std::ifstream{params.input_file()}, false));
+          new std::ifstream{params.input_file()}, true));
     }
     if (!params.output_requested()) {
       output_ptr = std::move(Container<std::ostream>(&std::cout, false));
     } else {
       if (!params.output_file().empty()) {
         output_ptr = std::move(Container<std::ostream>(
-            new std::ofstream{params.output_file()}, false));
+            new std::ofstream{params.output_file()}, true));
       } else {
         std::cerr << "missing parameter OUTPUT_FILE\n\nRun '"
                   << PROJECT_EXECUTABLE << " " << HELP_LONG_FLAG
