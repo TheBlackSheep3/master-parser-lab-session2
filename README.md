@@ -19,6 +19,17 @@ To build the project run
 cmake -B bld
 cmake --build bld
 ```
+
+### Troubleshooting
+In case CMake is unable to locate Flex and GNU Bison, their locations can passed to CMake manually with the followng command.
+```shell
+cmake -B bld \
+  -DFLEX_EXECUTABLE=/path/to/flex \
+  -DFLEX_INCLUDE_DIR=/path/to/include/dir \
+  -DBISON_EXECUTABLE=/path/to/bison
+```
+
+## Test
 To run the test invoke the following command after building the project
 ```shell
 ctest --test-dir bld
