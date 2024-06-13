@@ -16,8 +16,6 @@ class Parameters {
     for (auto curr = it_begin; curr < it_end; ++curr) {
       if (!curr) {
         continue;
-      } else if (m_output) {
-        m_output_file = std::string{*curr};
       } else if (0 == std::strncmp(*curr, HELP_SHORT_FLAG,
                                    strlen(HELP_SHORT_FLAG)) ||
                  0 == std::strncmp(*curr, HELP_LONG_FLAG,
@@ -33,6 +31,8 @@ class Parameters {
                  0 == std::strncmp(*curr, OUTPUT_LONG_FLAG,
                                    strlen(OUTPUT_LONG_FLAG))) {
         m_output = true;
+      } else if (m_output && m_output_file.empty()) {
+        m_output_file = std::string{*curr};
       } else {
         m_input_file = std::string(*curr);
       }
