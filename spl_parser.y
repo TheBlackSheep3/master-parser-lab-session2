@@ -2,13 +2,13 @@
 %code requires {
 #include <memory>
 #include "tree.hpp"
-namespace nd::spl {
+namespace nd::spl::lalr {
 class Lexer;
 }
 }
 %require "3.6"
 %language "c++"
-%define api.namespace {nd::spl}
+%define api.namespace {nd::spl::lalr}
 %define api.parser.class {Parser}
 %define api.value.type variant
 %define api.token.constructor
@@ -79,6 +79,6 @@ operand: IDENTIFIER[id] {$operand = $id;}
 %%
 
 // epilogue
-void nd::spl::Parser::error(std::string const& message) {
+void nd::spl::lalr::Parser::error(std::string const& message) {
 	std::cerr << message << '\n';
 }

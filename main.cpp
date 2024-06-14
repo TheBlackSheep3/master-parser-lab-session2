@@ -31,8 +31,8 @@ int parse(std::istream& input, std::ostream& output) {
     return EXIT_SUCCESS;
   } else {
     std::shared_ptr<nd::spl::tree::Program> prg_ptr;
-    nd::spl::Lexer lexer{&input};
-    nd::spl::Parser p{lexer, prg_ptr};
+    nd::spl::lalr::Lexer lexer{&input};
+    nd::spl::lalr::Parser p{lexer, prg_ptr};
     if (p.parse() == 0 && prg_ptr != nullptr) {
       output << *prg_ptr << std::endl;
       return EXIT_SUCCESS;

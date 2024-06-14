@@ -6,12 +6,12 @@
 
 // Give Flex the prototype of yylex we want ...
 #undef  YY_DECL
-#define YY_DECL nd::spl::Parser::symbol_type nd::spl::Lexer::symbol_yylex()
+#define YY_DECL nd::spl::lalr::Parser::symbol_type nd::spl::lalr::Lexer::symbol_yylex()
 // ... and declare it for the parser's sake.
 %}
 
 %option noyywrap
-%option yyclass="nd::spl::Lexer"
+%option yyclass="nd::spl::lalr::Lexer"
 %option c++
 %s IN_COMMENT
 
@@ -28,29 +28,29 @@
 "//".*\n              {}
 [ \t\r\n]             {}
 
-"begin"               {return nd::spl::Parser::make__BEGIN();}
-";"                   {return nd::spl::Parser::make_SEMICOLON();}
-"end"                 {return nd::spl::Parser::make_END();}
-"while"               {return nd::spl::Parser::make_WHILE();}
-"do"                  {return nd::spl::Parser::make_DO();}
-"od"                  {return nd::spl::Parser::make_OD();}
-"if"                  {return nd::spl::Parser::make_IF();}
-"then"                {return nd::spl::Parser::make_THEN();}
-"else"                {return nd::spl::Parser::make_ELSE();}
-"fi"                  {return nd::spl::Parser::make_FI();}
-":="                  {return nd::spl::Parser::make_ASSIGN();}
-"skip"                {return nd::spl::Parser::make_SKIP();}
-"("                   {return nd::spl::Parser::make_PAR_OP();}
-")"                   {return nd::spl::Parser::make_PAR_CL();}
-"<="                  {return nd::spl::Parser::make_RELATIONAL_OPERATOR(nd::spl::tree::RelationalOperator::LESS_EQUAL);}
-">="                  {return nd::spl::Parser::make_RELATIONAL_OPERATOR(nd::spl::tree::RelationalOperator::GREATER_EQUAL);}
-"<"                   {return nd::spl::Parser::make_RELATIONAL_OPERATOR(nd::spl::tree::RelationalOperator::LESS_THAN);}
-">"                   {return nd::spl::Parser::make_RELATIONAL_OPERATOR(nd::spl::tree::RelationalOperator::GREATER_THAN);}
-"!="                  {return nd::spl::Parser::make_RELATIONAL_OPERATOR(nd::spl::tree::RelationalOperator::NOT_EQUAL);}
-"="                   {return nd::spl::Parser::make_RELATIONAL_OPERATOR(nd::spl::tree::RelationalOperator::EQUAL);}
-[+-]                  {using namespace std;if (0 == strncmp(yytext, "+", 1)){return nd::spl::Parser::make_ADDITIVE_OPERATOR(nd::spl::tree::ArithmeticalOperator::PLUS);}else{return nd::spl::Parser::make_ADDITIVE_OPERATOR(nd::spl::tree::ArithmeticalOperator::MINUS);}}
-[*]                   {return nd::spl::Parser::make_MULTIPLICATIVE_OPERATOR(nd::spl::tree::ArithmeticalOperator::TIMES);}
-[a-zA-Z][a-zA-Z0-9_]* {return nd::spl::Parser::make_IDENTIFIER(std::make_shared<nd::spl::tree::Identifier>(yytext));}
--?[1-9][0-9]*|0       {return nd::spl::Parser::make_INTEGER(std::make_shared<nd::spl::tree::Constant>(atoll(yytext)));}
-.                     {return nd::spl::Parser::make_YYUNDEF();}
+"begin"               {return Parser::make__BEGIN();}
+";"                   {return Parser::make_SEMICOLON();}
+"end"                 {return Parser::make_END();}
+"while"               {return Parser::make_WHILE();}
+"do"                  {return Parser::make_DO();}
+"od"                  {return Parser::make_OD();}
+"if"                  {return Parser::make_IF();}
+"then"                {return Parser::make_THEN();}
+"else"                {return Parser::make_ELSE();}
+"fi"                  {return Parser::make_FI();}
+":="                  {return Parser::make_ASSIGN();}
+"skip"                {return Parser::make_SKIP();}
+"("                   {return Parser::make_PAR_OP();}
+")"                   {return Parser::make_PAR_CL();}
+"<="                  {return Parser::make_RELATIONAL_OPERATOR(tree::RelationalOperator::LESS_EQUAL);}
+">="                  {return Parser::make_RELATIONAL_OPERATOR(tree::RelationalOperator::GREATER_EQUAL);}
+"<"                   {return Parser::make_RELATIONAL_OPERATOR(tree::RelationalOperator::LESS_THAN);}
+">"                   {return Parser::make_RELATIONAL_OPERATOR(tree::RelationalOperator::GREATER_THAN);}
+"!="                  {return Parser::make_RELATIONAL_OPERATOR(tree::RelationalOperator::NOT_EQUAL);}
+"="                   {return Parser::make_RELATIONAL_OPERATOR(tree::RelationalOperator::EQUAL);}
+[+-]                  {using namespace std;if (0 == strncmp(yytext, "+", 1)){return Parser::make_ADDITIVE_OPERATOR(tree::ArithmeticalOperator::PLUS);}else{return Parser::make_ADDITIVE_OPERATOR(tree::ArithmeticalOperator::MINUS);}}
+[*]                   {return Parser::make_MULTIPLICATIVE_OPERATOR(tree::ArithmeticalOperator::TIMES);}
+[a-zA-Z][a-zA-Z0-9_]* {return Parser::make_IDENTIFIER(std::make_shared<tree::Identifier>(yytext));}
+-?[1-9][0-9]*|0       {return Parser::make_INTEGER(std::make_shared<tree::Constant>(atoll(yytext)));}
+.                     {return Parser::make_YYUNDEF();}
 %%

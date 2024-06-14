@@ -11,7 +11,7 @@
 
 #include "spl_parser.hpp"
 
-namespace nd::spl {
+namespace nd::spl::lalr {
 class Lexer : public yyFlexLexer {
  public:
   Lexer(std::istream* in) : yyFlexLexer(in) {}
@@ -19,4 +19,4 @@ class Lexer : public yyFlexLexer {
 
   virtual Parser::symbol_type symbol_yylex();
 };
-}  // namespace nd::spl
+}  // namespace nd::spl::lalr
