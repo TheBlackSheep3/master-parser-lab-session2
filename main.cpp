@@ -3,26 +3,13 @@
 #include <memory>
 #include <utility>
 
+#include <argparse/argparse.hpp>
+
 #include "config.hpp"
+#include "container.hpp"
 #include "spl_lexer.hpp"
 #include "spl_parser.hpp"
-#include "parameters.hpp"
 #include "tree.hpp"
-
-void print_help() {
-  std::cout << "Usage: " << PROJECT_EXECUTABLE << " [options] [INPUT_FILE]\n";
-  std::cout << "  -o, --output OUTPUT_FILE   Write output to OUTPUT_FILE.\n";
-  std::cout
-      << "  -h, --help                 Print this help message and exit.\n";
-  std::cout << "  -V, --version              Print the version of "
-            << PROJECT_EXECUTABLE << " and exit.\n\n";
-  std::cout << "If no INPUT_FILE is provided, input is read from stdin.\n";
-}
-
-void print_version() {
-  std::cout << PROJECT_EXECUTABLE << " version " << PROJECT_VERSION
-            << std::endl;
-}
 
 int parse(std::istream& input, std::ostream& output) {
   if (!input.good()) {
@@ -43,35 +30,39 @@ int parse(std::istream& input, std::ostream& output) {
 }
 
 int main(int argc, char const* argv[]) {
-  Parameters params{/* ignore binary name */ argv + 1, argv + argc};
-  if (params.help_requested()) {
-    print_help();
-    return EXIT_SUCCESS;
-  } else if (params.version_requested()) {
-    print_version();
-    return EXIT_SUCCESS;
-  } else {
-    Container<std::istream> input_ptr;
-    Container<std::ostream> output_ptr;
-    if (params.input_file().empty()) {
-      input_ptr = std::move(Container<std::istream>(&std::cin, false));
-    } else {
-      input_ptr = std::move(Container<std::istream>(
-          new std::ifstream{params.input_file()}, true));
-    }
-    if (!params.output_requested()) {
-      output_ptr = std::move(Container<std::ostream>(&std::cout, false));
-    } else {
-      if (!params.output_file().empty()) {
-        output_ptr = std::move(Container<std::ostream>(
-            new std::ofstream{params.output_file()}, true));
-      } else {
-        std::cerr << "missing parameter OUTPUT_FILE\n\nRun '"
-                  << PROJECT_EXECUTABLE << " " << HELP_LONG_FLAG
-                  << "' for more information.\n";
-        return EXIT_FAILURE;
-      }
-    }
-    return parse(*input_ptr, *output_ptr);
+  argparse::ArgumentParser program(PROJECT_EXECUTABLE, PROJECT_VERSION);
+  program.add_argument("-o", "--output")
+      .help("write output to OUTPUT_FILE")
+      .metavar("OUTPUT_FILE");
+  program.add_argument("-f", "--file")
+      .help("read input from INPUT_FILE")
+      .metavar("INPUT_FILE");
+  program.add_description(
+      "Parse code of the sample programming language, as described in "
+      "semantics of programming languages, and put out a tree representing the "
+      "program structure.");
+
+  try {
+    program.parse_args(argc, argv);
+  } catch (std::exception const& e) {
+    std::cerr << e.what() << '\n' << program;
+    exit(EXIT_FAILURE);
   }
+
+  Container<std::istream> input_ptr;
+  Container<std::ostream> output_ptr;
+  if (auto input_file = program.present("--file")) {
+    input_ptr = std::move(
+        Container<std::istream>(new std::ifstream{*input_file}, true));
+  } else {
+    input_ptr = std::move(Container<std::istream>(&std::cin, false));
+  }
+  if (auto output_file = program.present("--output")) {
+    output_ptr = std::move(
+        Container<std::ostream>(new std::ofstream{*output_file}, true));
+  } else {
+    output_ptr = std::move(Container<std::ostream>(&std::cout, false));
+  }
+
+  return parse(*input_ptr, *output_ptr);
 }

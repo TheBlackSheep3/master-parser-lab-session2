@@ -1,10 +1,18 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.7 FATAL_ERROR)
 
-project("parser-lab2-sample-programming-language" VERSION 1.1)
+project("parser-lab2-sample-programming-language" VERSION 1.2)
 
 set(CMAKE_CXX_STANDARD 17)
 set(EXECUTABLE_NAME spl_parser)
 configure_file(config.hpp.in config.hpp)
+
+include(cmake/CPM.cmake)
+
+CPMAddPackage(
+	NAME argparse
+	VERSION 3.0
+	GITHUB_REPOSITORY p-ranav/argparse
+)
 
 find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)
@@ -30,7 +38,7 @@ ADD_FLEX_BISON_DEPENDENCY(spl_lexer spl_parser)
 add_library(tree OBJECT tree.cpp)
 add_library(parser_lexer OBJECT ${BISON_spl_parser_OUTPUTS} ${FLEX_spl_lexer_OUTPUTS})
 add_executable(${EXECUTABLE_NAME} main.cpp)
-target_link_libraries(${EXECUTABLE_NAME} tree parser_lexer)
+target_link_libraries(${EXECUTABLE_NAME} tree parser_lexer argparse)
 target_include_directories(${EXECUTABLE_NAME}
 	PRIVATE
 		${CMAKE_CURRENT_BINARY_DIR}
@@ -51,7 +59,7 @@ set_tests_properties(Usage
 	PROPERTIES PASS_REGULAR_EXPRESSION "Usage:.*spl_parser.*\[options\].*INPUT_FILE"
 )
 
-add_test(NAME Division COMMAND ${EXECUTABLE_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/samples/division.spl)
+add_test(NAME Division COMMAND ${EXECUTABLE_NAME} -f ${CMAKE_CURRENT_SOURCE_DIR}/samples/division.spl)
 set_tests_properties(
 	Division
 	PROPERTIES
@@ -59,7 +67,7 @@ set_tests_properties(
 	FAIL_REGULAR_EXPRESSION "syntax error"
 )
 
-add_test(NAME Comments COMMAND ${EXECUTABLE_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/samples/comments.spl)
+add_test(NAME Comments COMMAND ${EXECUTABLE_NAME} -f ${CMAKE_CURRENT_SOURCE_DIR}/samples/comments.spl)
 set_tests_properties(
 	Comments
 	PROPERTIES
@@ -67,7 +75,7 @@ set_tests_properties(
 	FAIL_REGULAR_EXPRESSION "syntax error"
 )
 
-add_test(NAME Wrong_Assigment COMMAND ${EXECUTABLE_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/samples/wrong_assign.spl)
+add_test(NAME Wrong_Assigment COMMAND ${EXECUTABLE_NAME} -f ${CMAKE_CURRENT_SOURCE_DIR}/samples/wrong_assign.spl)
 set_tests_properties(
 	Wrong_Assigment
 	PROPERTIES
@@ -75,7 +83,7 @@ set_tests_properties(
 	FAIL_REGULAR_EXPRESSION "PROGRAM"
 )
 
-add_test(NAME Invalid_Input COMMAND ${EXECUTABLE_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/samples/faulty.spl)
+add_test(NAME Invalid_Input COMMAND ${EXECUTABLE_NAME} -f ${CMAKE_CURRENT_SOURCE_DIR}/samples/faulty.spl)
 set_tests_properties(
 	Invalid_Input
 	PROPERTIES
