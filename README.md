@@ -10,7 +10,7 @@ Build LR or LALR parser for (reasonable subset of) some programming language
 The tool used for generating the lexer is [Flex](https://github.com/westes/flex) and for the parser [GNU Bison](https://www.gnu.org/software/bison/) was used. To compile and run the software the following tools are needed
 - Flex 2.6.4
 - GNU Bison (at least version 3.6)
-- [CMake](https://cmake.org/download/) (at least version 3.7)
+- [CMake](https://cmake.org/download/) (at least version 3.14)
 - C++ compiler supporting C++17 (e.g. Apple Clang [used to develop this program], Clang, g++, MSVC)
 
 ## Build
@@ -38,7 +38,7 @@ ctest --test-dir bld
 ## Usage
 After compilation the binary is located in the `bld` directory. It only supports single file programs. Sample programs can be found in the subdirectory `samples`. The code file is passed as an argument to the binary and the parse tree gets printed to the next line and the program terminates.
 ```shell
-./bld/spl_parser samples/division.spl
+./bld/spl_parser --file samples/division.spl
 PROGRAM(COMP_STMT(COMP_STMT(ASSING_STMT(ID(q),CONST(0)),ASSING_STMT(ID(r),ID(m))),
 WHILE_STMT(B_EXPR(ID(r),>=,ID(n)),COMP_STMT(ASSING_STMT(ID(q),AR_EXPR(ID(q),+,CONST(1))),
 ASSING_STMT(ID(r),AR_EXPR(ID(r),-,ID(n)))))))
