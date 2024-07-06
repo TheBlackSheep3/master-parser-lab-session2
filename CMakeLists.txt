@@ -2,9 +2,11 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.14 FATAL_ERROR)
 
 project("parser-lab2-sample-programming-language" VERSION 1.2)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
 set(EXECUTABLE_NAME spl_parser)
 configure_file(config.hpp.in config.hpp)
+configure_file(.clangd.in ${CMAKE_CURRENT_SOURCE_DIR}/.clangd)
 
 include(cmake/CPM.cmake)
 
